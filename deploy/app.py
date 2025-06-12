@@ -13,7 +13,7 @@ st.write("Aplikasi ini menyajikan hasil analisis data dari proyek Capstone.")
 # --- Bagian Pemuatan Data ---
 st.subheader('1. Pemuatan Data')
 # Asumsi file data ada di folder 'data'
-DATA_PATH = 'data/nama_file_data.csv' # Ganti dengan nama file data Anda
+DATA_PATH = 'ObesityDataSet.csv' # Ganti dengan nama file data Anda
 
 @st.cache_data # Dekorator ini akan menyimpan data dalam cache untuk performa
 def load_data(path):
