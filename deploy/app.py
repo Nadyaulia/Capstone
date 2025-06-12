@@ -9,24 +9,22 @@ import io
 st.set_page_config(page_title="Aplikasi EDA Capstone - Obesity Dataset")
 st.title('Proses Exploratory Data Analysis (EDA) - Obesity Dataset')
 
-st.write("Aplikasi ini menyajikan hasil analisis data dari proyek Capstone, khususnya pada dataset obesitas.")
+st.write("Aplikasi ini menyajikan hasil analisis data dari proyek Capstone. Anda dapat mengunggah dataset Anda sendiri untuk dianalisis.")
 
 # --- Bagian Pemuatan Data ---
 st.subheader('1. Pemuatan Data')
-# Asumsi file data ada di folder 'data' atau di root jika di-deploy
-# Jika Anda meng-uploadnya ke GitHub, pastikan path-nya benar relatif terhadap aplikasi Streamlit Anda.
-DATA_PATH = 'deploy/ObesityDataSet.csv' # Sesuaikan path jika file berada di subfolder (misal: 'data/ObesityDataSet.csv')
 
-@st.cache_data # Dekorator ini akan menyimpan data dalam cache untuk performa
-def load_data(path):
+uploaded_file = st.file_uploader("Unggah file CSV Anda", type=["csv"])
+
+df = None # Inisialisasi df sebagai None
+
+if uploaded_file is not None:
+    # Membaca file yang diunggah
     try:
-        df = pd.read_csv(path)
-        return df
-    except FileNotFoundError:
-        st.error(f"Error: File data tidak ditemukan di {path}. Pastikan file 'ObesityDataSet.csv' ada di lokasi yang benar di repositori Anda.")
-        return None
-
-df = load_data(DATA_PATH)
+        df = pd.read_csv(uploaded_file)
+        st.success("File berhasil diunggah dan dibaca!")
+    except Exception as e:
+        st.error(f"Terjadi kesalahan saat membaca file: {e}")
 
 if df is not None:
     st.write("Data berhasil dimuat. Berikut 5 baris pertama:")
@@ -48,21 +46,27 @@ if df is not None:
 
     st.write("Statistik deskriptif untuk kolom kategori (nilai unik dan frekuensi):")
     # Identifikasi kolom kategorikal (contoh)
-    categorical_cols = df.select_dtypes(include='object').columns
-    for col in categorical_cols:
-        st.write(f"**Kolom: {col}**")
-        st.write(df[col].value_counts())
+    # Gunakan .select_dtypes(include='object', 'category') untuk robustness
+    categorical_cols = df.select_dtypes(include=['object', 'category']).columns
+    if not categorical_cols.empty:
+        for col in categorical_cols:
+            st.write(f"**Kolom: {col}**")
+            st.write(df[col].value_counts())
+    else:
+        st.write("Tidak ada kolom kategorikal yang terdeteksi.")
+
 
     # --- Bagian Visualisasi Data ---
     st.subheader('3. Visualisasi Data')
 
-    # Contoh visualisasi yang umum ada di EDA untuk dataset seperti ini:
+    # Dapatkan kolom numerik dan kategorikal setelah data dimuat
+    numeric_cols = df.select_dtypes(include=np.number).columns
+    categorical_cols = df.select_dtypes(include=['object', 'category']).columns
 
     # 3.1 Distribusi Kolom Numerik
     st.write("### Distribusi Kolom Numerik")
-    numeric_cols = df.select_dtypes(include=np.number).columns
     if not numeric_cols.empty:
-        selected_numeric_col = st.selectbox('Pilih kolom numerik untuk melihat distribusi:', numeric_cols)
+        selected_numeric_col = st.selectbox('Pilih kolom numerik untuk melihat distribusi:', numeric_cols, key='dist_num_select')
         if selected_numeric_col:
             fig_hist, ax_hist = plt.subplots()
             sns.histplot(df[selected_numeric_col], kde=True, ax=ax_hist)
@@ -76,7 +80,7 @@ if df is not None:
     # 3.2 Count Plot untuk Kolom Kategorikal
     st.write("### Distribusi Kolom Kategorikal")
     if not categorical_cols.empty:
-        selected_categorical_col = st.selectbox('Pilih kolom kategorikal untuk melihat distribusi:', categorical_cols)
+        selected_categorical_col = st.selectbox('Pilih kolom kategorikal untuk melihat distribusi:', categorical_cols, key='dist_cat_select')
         if selected_categorical_col:
             fig_count, ax_count = plt.subplots()
             sns.countplot(y=df[selected_categorical_col], order=df[selected_categorical_col].value_counts().index, ax=ax_count)
@@ -96,16 +100,16 @@ if df is not None:
         ax_corr.set_title('Heatmap Korelasi')
         st.pyplot(fig_corr)
     else:
-        st.warning("Tidak cukup kolom numerik untuk membuat heatmap korelasi.")
+        st.warning("Tidak cukup kolom numerik (minimal 2) untuk membuat heatmap korelasi.")
 
     # 3.4 Box Plot untuk melihat outlier dan distribusi per kategori
     st.write("### Box Plot: Distribusi Numerik Berdasarkan Kategori")
     if not numeric_cols.empty and not categorical_cols.empty:
         col1, col2 = st.columns(2)
         with col1:
-            box_numeric_col = st.selectbox('Pilih kolom numerik:', numeric_cols, key='box_num')
+            box_numeric_col = st.selectbox('Pilih kolom numerik:', numeric_cols, key='box_num_select')
         with col2:
-            box_categorical_col = st.selectbox('Pilih kolom kategorikal:', categorical_cols, key='box_cat')
+            box_categorical_col = st.selectbox('Pilih kolom kategorikal:', categorical_cols, key='box_cat_select')
         
         if box_numeric_col and box_categorical_col:
             fig_box, ax_box = plt.subplots(figsize=(10, 6))
@@ -125,15 +129,15 @@ if df is not None:
     st.subheader('4. Eksplorasi Kolom')
     selected_column = st.selectbox(
         'Pilih kolom untuk melihat nilai unik dan jumlahnya:',
-        df.columns
+        df.columns, key='explore_col_select'
     )
     if selected_column:
         st.write(f"Nilai unik di '{selected_column}':")
         st.write(df[selected_column].unique())
         st.write(f"Jumlah nilai unik: {df[selected_column].nunique()}")
-        if df[selected_column].dtype == 'object': # Untuk kolom kategorikal
+        if df[selected_column].dtype in ['object', 'category']: # Untuk kolom kategorikal
             st.write("Frekuensi setiap nilai unik:")
             st.write(df[selected_column].value_counts())
 
 else:
-    st.warning("Aplikasi tidak dapat berjalan tanpa data. Mohon periksa file data.")
+    st.info("Silakan unggah file CSV Anda untuk memulai proses EDA.")
