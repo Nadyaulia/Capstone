@@ -15,7 +15,7 @@ st.write("Aplikasi ini menyajikan hasil analisis data dari proyek Capstone, khus
 st.subheader('1. Pemuatan Data')
 # Asumsi file data ada di folder 'data' atau di root jika di-deploy
 # Jika Anda meng-uploadnya ke GitHub, pastikan path-nya benar relatif terhadap aplikasi Streamlit Anda.
-DATA_PATH = 'ObesityDataSet.csv' # Sesuaikan path jika file berada di subfolder (misal: 'data/ObesityDataSet.csv')
+DATA_PATH = 'deploy/ObesityDataSet.csv' # Sesuaikan path jika file berada di subfolder (misal: 'data/ObesityDataSet.csv')
 
 @st.cache_data # Dekorator ini akan menyimpan data dalam cache untuk performa
 def load_data(path):
