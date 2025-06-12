@@ -65,8 +65,8 @@ if df is not None:
      #   sns.scatterplot(x='Age', y='Fare', data=df, ax=ax)
     #    ax.set_title('Umur vs Harga Tiket')
      #   st.pyplot(fig)
-    else:
-        st.warning("Kolom 'Age' atau 'Fare' tidak ditemukan untuk visualisasi.")
+   # else:
+     #   st.warning("Kolom 'Age' atau 'Fare' tidak ditemukan untuk visualisasi.")
 
     # Tambahkan lebih banyak visualisasi dan analisis Anda di sini
     # Contoh interaktivitas sederhana
