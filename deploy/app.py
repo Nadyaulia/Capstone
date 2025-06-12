@@ -80,3 +80,5 @@ if df is not None:
 
 else:
     st.warning("Aplikasi tidak dapat berjalan tanpa data. Mohon periksa file data.")
+
+#pip streamlit
