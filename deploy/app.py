@@ -13,7 +13,7 @@ st.write("Aplikasi ini menyajikan hasil analisis data dari proyek Capstone.")
 # --- Bagian Pemuatan Data ---
 st.subheader('1. Pemuatan Data')
 # Asumsi file data ada di folder 'data'
-DATA_PATH = 'Capstone/deploy/ObesityDataSet.csv' # Ganti dengan nama file data Anda
+DATA_PATH = 'ObesityDataSet.csv' # Ganti dengan nama file data Anda
 
 @st.cache_data # Dekorator ini akan menyimpan data dalam cache untuk performa
 def load_data(path):
@@ -32,7 +32,7 @@ if df is not None:
 
     st.write(f"Ukuran Data: {df.shape[0]} baris, {df.shape[1]} kolom")
     st.write("Informasi Kolom:")
-    st.dataframe(df.info()) # st.dataframe() bisa menampilkan output df.info() dengan sedikit tweaking atau gunakan st.text()
+    #st.dataframe(df.info()) # st.dataframe() bisa menampilkan output df.info() dengan sedikit tweaking atau gunakan st.text()
 
     # Untuk menampilkan df.info() dengan baik di Streamlit:
     import io
@@ -59,12 +59,12 @@ if df is not None:
     else:
         st.warning("Kolom 'Age' tidak ditemukan untuk visualisasi.")
 
-    st.write("Scatter Plot (Contoh: 'Age' vs 'Fare')")
-    if 'Age' in df.columns and 'Fare' in df.columns:
-        fig, ax = plt.subplots()
-        sns.scatterplot(x='Age', y='Fare', data=df, ax=ax)
-        ax.set_title('Umur vs Harga Tiket')
-        st.pyplot(fig)
+   # st.write("Scatter Plot (Contoh: 'Age' vs 'Fare')")
+    #if 'Age' in df.columns and 'Fare' in df.columns:
+    #    fig, ax = plt.subplots()
+     #   sns.scatterplot(x='Age', y='Fare', data=df, ax=ax)
+    #    ax.set_title('Umur vs Harga Tiket')
+     #   st.pyplot(fig)
     else:
         st.warning("Kolom 'Age' atau 'Fare' tidak ditemukan untuk visualisasi.")
 
