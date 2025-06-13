@@ -145,7 +145,11 @@ else:
     # Tambahkan lebih banyak visualisasi dan analisis Anda di sini sesuai dengan notebook Capstone Anda
     
     # Contoh interaktivitas sederhana (sudah ada di kode Anda, ini tetap relevan)
-    st.subheader('4. Eksplorasi Kolom')
+  # --- Bagian Eksplorasi Kolom ---
+st.subheader('4. Eksplorasi Kolom')
+
+# Cek apakah dataset sudah dimuat
+if df is not None:
     selected_column = st.selectbox(
         'Pilih kolom untuk melihat nilai unik dan jumlahnya:',
         df.columns, key='explore_col_select'
@@ -157,7 +161,6 @@ else:
         if df[selected_column].dtype in ['object', 'category']: # Untuk kolom kategorikal
             st.write("Frekuensi setiap nilai unik:")
             st.write(df[selected_column].value_counts())
-
 else:
     st.info("Silakan unggah file CSV Anda untuk memulai proses EDA.")
 
