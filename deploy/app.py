@@ -5,21 +5,6 @@ import os
 
 st.title("Prediksi Kategori Obesitas")
 
-# Debug: tampilkan file yang tersedia
-st.write("📁 File dalam direktori sekarang:", os.listdir())
-
-# Coba load model dan scaler dengan try-except
-try:
-    model = joblib.load("obesity_model.pkl")
-    st.success("✅ Model berhasil dimuat.")
-except Exception as e:
-    st.error(f"❌ Gagal memuat model: {e}")
-
-try:
-    scaler = joblib.load("scaler.pkl")
-    st.success("✅ Scaler berhasil dimuat.")
-except Exception as e:
-    st.error(f"❌ Gagal memuat scaler: {e}")
 
 st.write("Silakan lengkapi data diri Anda untuk mengetahui kategori obesitas.")
 
