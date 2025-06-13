@@ -5,6 +5,9 @@ import os
 
 st.title("Prediksi Kategori Obesitas")
 
+# Load model dan scaler
+model = joblib.load("deploy/model_obesitas.pkl")
+scaler = joblib.load("deploy/scaler.pkl")
 
 st.write("Silakan lengkapi data diri Anda untuk mengetahui kategori obesitas.")
 
