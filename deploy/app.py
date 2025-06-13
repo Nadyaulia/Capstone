@@ -33,12 +33,9 @@ if df is not None:
     st.write("Data berhasil dimuat. Berikut 5 baris pertama:")
     st.dataframe(df.head())
 
-    st.write(f"### Ukuran Data Sebelum Konversi: {df.shape[0]} baris, {df.shape[1]} kolom")
+    st.write(f"Ukuran Data Sebelum Konversi: {df.shape[0]} baris, {df.shape[1]} kolom")
 
-    # --- Bagian 6: Konversi Tipe Data Otomatis ---
-    st.subheader('6. Konversi Tipe Data Otomatis')
-
-    st.write("### Informasi Tipe Data Sebelum Konversi")
+    st.write("Informasi Kolom:")
     buffer_before = io.StringIO()
     df.info(buf=buffer_before)
     s_before = buffer_before.getvalue()
