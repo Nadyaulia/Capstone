@@ -59,17 +59,11 @@ if df is not None:
     
     st.success("Konversi tipe data otomatis selesai.")
 
-    st.write(f"### Ukuran Data Setelah Konversi: {df.shape[0]} baris, {df.shape[1]} kolom")
-
     st.write("### Informasi Tipe Data Setelah Konversi Otomatis")
     buffer_after = io.StringIO()
     df.info(buf=buffer_after)
     s_after = buffer_after.getvalue()
     st.text(s_after)
-
-    # Preview data hasil konversi
-    st.write("### Preview Data Setelah Konversi Otomatis")
-    st.dataframe(df.head())
 
     # --- Bagian Analisis Statistik Deskriptif ---
     st.subheader('2. Statistik Deskriptif')
