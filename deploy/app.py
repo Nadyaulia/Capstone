@@ -4,8 +4,8 @@ import joblib
 from sklearn.preprocessing import StandardScaler
 
 # Load model
-model = joblib.load("model_obesitas.pkl")  # Pastikan model ini sudah tersedia
-scaler = joblib.load("scaler.pkl")
+model = joblib.load("deploy/model_obesitas.pkl")  # Pastikan model ini sudah tersedia
+scaler = joblib.load("deploy.scaler.pkl")
 
 
 # Judul aplikasi
