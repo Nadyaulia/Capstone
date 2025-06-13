@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import joblib
 from sklearn.preprocessing import StandardScaler
+import os
+st.write("File dalam direktori sekarang:", os.listdir())
+
 
 # Load model
 model = joblib.load("deploy/model_obesitas.pkl")  # Pastikan model ini sudah tersedia
