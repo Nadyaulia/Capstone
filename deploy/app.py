@@ -2,14 +2,16 @@ import streamlit as st
 import pandas as pd
 import joblib
 import numpy as np
+import os
 
 # Muat model dan scaler
 @st.cache_resource
 def load_model():
-    if not os.path.isfile('obesity_model.pkl'):
-        st.error("Model file tidak ditemukan. Pastikan file 'obesity_model.pkl' sudah diupload.")
+    model_path = 'obesity_model.pkl'
+    if not os.path.isfile(model_path):
+        st.error(f"Model file tidak ditemukan: {model_path}")
         st.stop()
-    return joblib.load('obesity_model.pkl')
+    return joblib.load(model_path)
 
 
 @st.cache_resource
