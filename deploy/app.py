@@ -27,17 +27,52 @@ if uploaded_file is not None:
         st.error(f"Terjadi kesalahan saat membaca file: {e}")
 
 if df is not None:
+    # Simpan salinan original untuk ditampilkan info sebelum konversi
+    df_original = df.copy()
+    
     st.write("Data berhasil dimuat. Berikut 5 baris pertama:")
     st.dataframe(df.head())
 
-    st.write(f"Ukuran Data: {df.shape[0]} baris, {df.shape[1]} kolom")
-    st.write("Informasi Kolom:")
+    st.write(f"### Ukuran Data Sebelum Konversi: {df.shape[0]} baris, {df.shape[1]} kolom")
+
+    # --- Bagian 6: Konversi Tipe Data Otomatis ---
+    st.subheader('6. Konversi Tipe Data Otomatis')
+
+    st.write("### Informasi Tipe Data Sebelum Konversi")
+    buffer_before = io.StringIO()
+    df.info(buf=buffer_before)
+    s_before = buffer_before.getvalue()
+    st.text(s_before)
+
+    st.write("### Memulai Konversi Otomatis...")
+
+    for col in df.columns:
+        # Jika kolom memiliki hanya sedikit nilai unik, ubah menjadi 'category'
+        if df[col].dtype == 'object' and df[col].nunique() / len(df) < 0.05:
+            df[col] = df[col].astype('category')
+        # Jika kolom numerik dan bisa jadi int tanpa desimal, ubah ke int64
+        elif pd.api.types.is_numeric_dtype(df[col]):
+            if (df[col] % 1 == 0).all():
+                df[col] = pd.to_numeric(df[col], errors='coerce').astype('Int64')
+            else:
+                df[col] = pd.to_numeric(df[col], errors='coerce').astype('float64')
+        # Jika kolom terlihat seperti tanggal
+        elif pd.api.types.is_datetime64_any_dtype(df[col]):
+            df[col] = pd.to_datetime(df[col], errors='coerce')
     
-    # Untuk menampilkan df.info() dengan baik di Streamlit:
-    buffer = io.StringIO()
-    df.info(buf=buffer)
-    s = buffer.getvalue()
-    st.text(s)
+    st.success("Konversi tipe data otomatis selesai.")
+
+    st.write(f"### Ukuran Data Setelah Konversi: {df.shape[0]} baris, {df.shape[1]} kolom")
+
+    st.write("### Informasi Tipe Data Setelah Konversi Otomatis")
+    buffer_after = io.StringIO()
+    df.info(buf=buffer_after)
+    s_after = buffer_after.getvalue()
+    st.text(s_after)
+
+    # Preview data hasil konversi
+    st.write("### Preview Data Setelah Konversi Otomatis")
+    st.dataframe(df.head())
 
     # --- Bagian Analisis Statistik Deskriptif ---
     st.subheader('2. Statistik Deskriptif')
