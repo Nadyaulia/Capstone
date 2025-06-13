@@ -161,4 +161,3 @@ else:
 else:
     st.info("Silakan unggah file CSV Anda untuk memulai proses EDA.")
 
-lakukan seperti yg saya kirim untuk  type datanya sebelum dikonversi dan sesudah dikonversi
