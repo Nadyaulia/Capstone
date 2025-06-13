@@ -6,7 +6,11 @@ import numpy as np
 # Muat model dan scaler
 @st.cache_resource
 def load_model():
+    if not os.path.isfile('obesity_model.pkl'):
+        st.error("Model file tidak ditemukan. Pastikan file 'obesity_model.pkl' sudah diupload.")
+        st.stop()
     return joblib.load('obesity_model.pkl')
+
 
 @st.cache_resource
 def load_scaler():
