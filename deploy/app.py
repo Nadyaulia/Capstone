@@ -2,8 +2,19 @@ import streamlit as st
 import pandas as pd
 import joblib
 from sklearn.preprocessing import StandardScaler
-import os
-st.write("File dalam direktori sekarang:", os.listdir())
+
+try:
+    model = joblib.load("obesity_model.pkl")
+    st.success("Model berhasil dimuat.")
+except Exception as e:
+    st.error(f"Gagal memuat model: {e}")
+
+try:
+    scaler = joblib.load("scaler.pkl")
+    st.success("Scaler berhasil dimuat.")
+except Exception as e:
+    st.error(f"Gagal memuat scaler: {e}")
+
 
 
 # Load model
