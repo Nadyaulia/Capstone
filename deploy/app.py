@@ -24,7 +24,7 @@ family_history = st.selectbox("Riwayat keluarga dengan obesitas?", ["yes", "no"]
 scc = st.selectbox("Apakah Anda mencatat kalori yang dikonsumsi?", ["yes", "no"])
 
 # Tombol prediksi
-if st.button("Prediksi"):
+if st.button("Prediksi Sekarang"):
     # Di sini Anda akan memproses input dan menjalankan model
     st.success("Input berhasil disimpan! Silakan lanjutkan ke proses prediksi.")
 
@@ -64,7 +64,7 @@ def preprocess_input(data):
     return data
 
 
-if st.button("Prediksi"):
+if st.button("Lihat Hasil Prediksi"):
     # Mengumpulkan input pengguna
     age = st.number_input("Usia (tahun)", min_value=1, max_value=120, value=25)
     gender = st.selectbox("Jenis Kelamin", ["Male", "Female"])
