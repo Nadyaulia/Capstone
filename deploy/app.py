@@ -30,14 +30,43 @@ if df is not None:
     st.write("Data berhasil dimuat. Berikut 5 baris pertama:")
     st.dataframe(df.head())
 
-    st.write(f"Ukuran Data: {df.shape[0]} baris, {df.shape[1]} kolom")
+    
+    st.write(f"Ukuran Data pada dataset: {df.shape[0]} baris, {df.shape[1]} kolom")
     st.write("Informasi Kolom:")
     
     # Untuk menampilkan df.info() dengan baik di Streamlit:
-    buffer = io.StringIO()
-    df.info(buf=buffer)
-    s = buffer.getvalue()
-    st.text(s)
+   # buffer = io.StringIO()
+    #df.info(buf=buffer)
+    #s = buffer.getvalue()
+    #st.text(s)
+
+
+     # Simpan info sebelum konversi
+        buffer_before = io.StringIO()
+        df.info(buf=buffer_before)
+        info_before = buffer_before.getvalue()
+
+        # Konversi ke numerik
+        num_cols = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
+        for col in num_cols:
+            df[col] = pd.to_numeric(df[col], errors='coerce')
+
+        # Simpan info setelah konversi
+        buffer_after = io.StringIO()
+        df.info(buf=buffer_after)
+        info_after = buffer_after.getvalue()
+
+        st.success("File berhasil diunggah dan dibaca!")
+
+        # Tampilkan perbandingan tipe data sebelum dan sesudah
+        st.subheader("Perbandingan Informasi Tipe Data")
+        st.markdown("### Sebelum Konversi:")
+        st.text(info_before)
+
+        st.markdown("### Sesudah Konversi:")
+        st.text(info_after)
+
+    
 
     # --- Bagian Analisis Statistik Deskriptif ---
     st.subheader('2. Statistik Deskriptif')
