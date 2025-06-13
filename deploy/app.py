@@ -7,8 +7,8 @@ st.write("File dalam direktori sekarang:", os.listdir())
 
 
 # Load model
-model = joblib.load("deploy/model_obesitas.pkl")  # Pastikan model ini sudah tersedia
-scaler = joblib.load("deploy/scaler.pkl")
+model = joblib.load("obesity_model.pkl")  # Pastikan model ini sudah tersedia
+scaler = joblib.load("scaler.pkl")
 
 
 # Judul aplikasi
