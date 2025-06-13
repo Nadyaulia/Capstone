@@ -7,15 +7,16 @@ import os
 # Muat model dan scaler
 @st.cache_resource
 def load_model():
-    model_path = 'obesity_model.pkl'
-    if not os.path.isfile(model_path):
-        st.error(f"Model file tidak ditemukan: {model_path}")
+    if not os.path.isfile('obesity_model.pkl'):
+        st.error("Model file tidak ditemukan: 'obesity_model.pkl'")
         st.stop()
-    return joblib.load(model_path)
-
+    return joblib.load('obesity_model.pkl')
 
 @st.cache_resource
 def load_scaler():
+    if not os.path.isfile('scaler.pkl'):
+        st.error("Scaler file tidak ditemukan: 'scaler.pkl'")
+        st.stop()
     return joblib.load('scaler.pkl')
 
 model = load_model()
