@@ -67,7 +67,8 @@ def preprocess_input(data):
 if st.button("Lihat Hasil Prediksi"):
     # Mengumpulkan input pengguna
     age = st.number_input("Usia (tahun)", min_value=1, max_value=120, value=25)
-    gender = st.selectbox("Jenis Kelamin", ["Male", "Female"], index=0)
+    gender_options = ["Male", "Female"] 
+    gender = st.selectbox("Jenis Kelamin", options=gender_options)
     height = st.number_input("Tinggi Badan (meter)", min_value=0.5, max_value=2.5, value=1.7)
     weight = st.number_input("Berat Badan (kg)", min_value=20, max_value=200, value=70)
     calc = st.selectbox("Seberapa sering konsumsi alkohol?", ["no", "Sometimes", "Frequently", "Always"])
