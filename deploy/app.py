@@ -145,19 +145,26 @@ else:
     # Tambahkan lebih banyak visualisasi dan analisis Anda di sini sesuai dengan notebook Capstone Anda
     
     # Contoh interaktivitas sederhana (sudah ada di kode Anda, ini tetap relevan)
-    st.subheader('4. Eksplorasi Kolom')
-    selected_column = st.selectbox(
-        'Pilih kolom untuk melihat nilai unik dan jumlahnya:',
-        df.columns, key='explore_col_select'
-    )
-    if selected_column:
-        st.write(f"Nilai unik di '{selected_column}':")
-        st.write(df[selected_column].unique())
-        st.write(f"Jumlah nilai unik: {df[selected_column].nunique()}")
-        if df[selected_column].dtype in ['object', 'category']: # Untuk kolom kategorikal
-            st.write("Frekuensi setiap nilai unik:")
-            st.write(df[selected_column].value_counts())
+   # Eksplorasi Kolom
+st.subheader('4. Eksplorasi Kolom')
+selected_column = st.selectbox(
+    'Pilih kolom untuk melihat nilai unik dan jumlahnya:',
+    df.columns, key='explore_col_select'
+)
 
+if selected_column:
+    st.write(f"Nilai unik di '{selected_column}':")
+    st.write(df[selected_column].unique())
+    st.write(f"Jumlah nilai unik: {df[selected_column].nunique()}")
+
+    # Cek tipe data kolom
+    if df[selected_column].dtype in ['object', 'category']:  # Untuk kolom kategorikal
+        st.write("Frekuensi setiap nilai unik:")
+        st.write(df[selected_column].value_counts())
+    elif df[selected_column].dtype in ['int64', 'float64']:  # Untuk kolom numerik
+        st.write("Statistik deskriptif kolom numerik:")
+        st.write(df[selected_column].describe())
+    else:
+        st.write("Tipe data kolom tidak didukung.")
 else:
-    st.info("Silakan unggah file CSV Anda untuk memulai proses EDA.")
-
+    st.info("Silakan pilih kolom untuk melanjutkan eksplorasi.")
