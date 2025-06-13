@@ -5,6 +5,7 @@ import numpy as np
 import os
 
 # Muat model dan scaler
+joblib.load('obesity_model.pkl')
 @st.cache_resource
 def load_model():
     if not os.path.isfile('obesity_model.pkl'):
