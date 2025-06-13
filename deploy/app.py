@@ -5,6 +5,8 @@ from sklearn.preprocessing import StandardScaler
 
 # Load model
 model = joblib.load("model_obesitas.pkl")  # Pastikan model ini sudah tersedia
+scaler = joblib.load("scaler.pkl")
+
 
 # Judul aplikasi
 st.title("Prediksi Kategori Obesitas")
@@ -33,6 +35,7 @@ with st.form("form_prediksi"):
 
 # Preprocessing fungsi
 def preprocess_input(data):
+    # Mapping kategorikal
     gender_map = {"Male": 0, "Female": 1}
     calc_map = {"no": 0, "Sometimes": 1, "Frequently": 2, "Always": 3}
     favc_map = {"no": 0, "yes": 1}
@@ -46,23 +49,22 @@ def preprocess_input(data):
         "Motorbike": 3,
         "Bike": 4
     }
-    fam_map = {"no": 0, "yes": 1}
 
-    data['Gender'] = gender_map[data['Gender']]
-    data['FAVC'] = favc_map[data['FAVC']]
-    data['SMOKE'] = smoke_map[data['SMOKE']]
-    data['SCC'] = scc_map[data['SCC']]
-    data['CAEC'] = caec_map[data['CAEC']]
-    data['CALC'] = calc_map[data['CALC']]
-    data['MTRANS'] = mtrans_map[data['MTRANS']]
-    data['family_history_with_overweight'] = fam_map[data['family_history_with_overweight']]
+    # Encode data
+    data['Gender'] = data['Gender'].map(gender_map)
+    data['CALC'] = data['CALC'].map(calc_map)
+    data['FAVC'] = data['FAVC'].map(favc_map)
+    data['SMOKE'] = data['SMOKE'].map(smoke_map)
+    data['SCC'] = data['SCC'].map(scc_map)
+    data['CAEC'] = data['CAEC'].map(caec_map)
+    data['MTRANS'] = data['MTRANS'].map(mtrans_map)
 
-    # Normalisasi numerik
+    # Normalisasi
     num_cols = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
-    scaler = StandardScaler()
-    data[num_cols] = scaler.fit_transform(data[num_cols])
+    data[num_cols] = scaler.transform(data[num_cols])
 
     return data
+
 
 # Jika tombol ditekan
 if submitted:
