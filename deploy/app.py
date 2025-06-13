@@ -56,7 +56,6 @@ if df is not None:
         df.info(buf=buffer_after)
         info_after = buffer_after.getvalue()
 
-        st.success("File berhasil diunggah dan dibaca!")
 
         # Tampilkan perbandingan tipe data sebelum dan sesudah
         st.subheader("Perbandingan Informasi Tipe Data")
