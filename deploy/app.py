@@ -4,9 +4,9 @@ st.title("Prediksi Kategori Obesitas")
 st.write("Silakan lengkapi data diri Anda untuk mengetahui kategori obesitas.")
 
 # Input numerik
-age = st.number_input("Usia (tahun)", min_value=1, max_value=120, value=25)
-height = st.number_input("Tinggi Badan (meter)", min_value=0.5, max_value=2.5, value=1.7)
-weight = st.number_input("Berat Badan (kg)", min_value=20, max_value=200, value=70)
+age = st.number_input("Usia (tahun)", min_value=1.0, max_value=120.0, value=25.0)
+height = st.number_input("Tinggi Badan (meter)", value=1.7, min_value=0.5, max_value=2.5)
+weight = st.number_input("Berat Badan (kg)", value=70.0, min_value=20.0, max_value=200.0)
 fcvc = st.slider("Frekuensi makan sayur per minggu", min_value=0, max_value=10, value=2)
 ncp = st.slider("Jumlah makan per hari", min_value=1, max_value=10, value=3)
 ch2o = st.slider("Konsumsi air per hari (liter)", min_value=0, max_value=5, value=2)
