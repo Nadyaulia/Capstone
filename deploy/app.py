@@ -3,23 +3,10 @@ import pandas as pd
 import joblib
 from sklearn.preprocessing import StandardScaler
 
-try:
-    model = joblib.load("obesity_model.pkl")
-    st.success("Model berhasil dimuat.")
-except Exception as e:
-    st.error(f"Gagal memuat model: {e}")
-
-try:
-    scaler = joblib.load("scaler.pkl")
-    st.success("Scaler berhasil dimuat.")
-except Exception as e:
-    st.error(f"Gagal memuat scaler: {e}")
-
-
-
 # Load model
-model = joblib.load("obesity_model.pkl")  # Pastikan model ini sudah tersedia
-scaler = joblib.load("scaler.pkl")
+# Simpan ulang dengan protokol pickle yang aman
+joblib.dump(model, "obesity_model.pkl", protocol=4)
+joblib.dump(scaler, "scaler.pkl", protocol=4)
 
 
 # Judul aplikasi
