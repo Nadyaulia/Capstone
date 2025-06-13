@@ -143,9 +143,9 @@ else:
     st.info("Silakan unggah file CSV Anda untuk memulai proses EDA.")
 
 
-# --- Bagian 5: Konversi Tipe Data ---
+# --- Bagian 6: Konversi Tipe Data Otomatis ---
 if df is not None:
-    st.subheader('5. Konversi Tipe Data')
+    st.subheader('6. Konversi Tipe Data Otomatis')
 
     # Menampilkan info tipe data sebelum konversi
     st.write("### Informasi Tipe Data Sebelum Konversi")
@@ -155,46 +155,36 @@ if df is not None:
     st.text(s_before)
 
     # Membuat salinan dataframe agar tidak merusak data asli
-    df_converted = df.copy()
+    df_auto_converted = df.copy()
 
-    st.write("### Ubah Tipe Data Kolom")
-    col_to_convert = st.selectbox("Pilih kolom yang ingin diubah tipe datanya:", df.columns, key='convert_col_select')
+    st.write("### Memulai Konversi Otomatis...")
+
+    for col in df_auto_converted.columns:
+        # Jika kolom memiliki hanya sedikit nilai unik, ubah menjadi 'category'
+        if df_auto_converted[col].dtype == 'object' and df_auto_converted[col].nunique() / len(df_auto_converted) < 0.05:
+            df_auto_converted[col] = df_auto_converted[col].astype('category')
+        # Jika kolom numerik dan bisa jadi int tanpa desimal, ubah ke int64
+        elif pd.api.types.is_numeric_dtype(df_auto_converted[col]):
+            if (df_auto_converted[col] % 1 == 0).all():
+                df_auto_converted[col] = pd.to_numeric(df_auto_converted[col], errors='coerce').astype('Int64')
+            else:
+                df_auto_converted[col] = pd.to_numeric(df_auto_converted[col], errors='coerce').astype('float64')
+        # Jika kolom terlihat seperti tanggal
+        elif pd.api.types.is_datetime64_any_dtype(df_auto_converted[col]):
+            df_auto_converted[col] = pd.to_datetime(df_auto_converted[col], errors='coerce')
     
-    if col_to_convert:
-        current_type = df[col_to_convert].dtype
-        st.write(f"Tipe data saat ini dari '{col_to_convert}': `{current_type}`")
-
-        target_type = st.selectbox(
-            "Pilih tipe data baru:",
-            options=['object', 'int64', 'float64', 'category', 'datetime64[ns]'],
-            key='target_type_select'
-        )
-
-        if st.button("Konversi"):
-            try:
-                if target_type == 'int64':
-                    df_converted[col_to_convert] = pd.to_numeric(df_converted[col_to_convert], errors='coerce').astype('Int64')
-                elif target_type == 'float64':
-                    df_converted[col_to_convert] = pd.to_numeric(df_converted[col_to_convert], errors='coerce').astype(float)
-                elif target_type == 'category':
-                    df_converted[col_to_convert] = df_converted[col_to_convert].astype('category')
-                elif target_type == 'datetime64[ns]':
-                    df_converted[col_to_convert] = pd.to_datetime(df_converted[col_to_convert], errors='coerce')
-                elif target_type == 'object':
-                    df_converted[col_to_convert] = df_converted[col_to_convert].astype(str)
-
-                st.success(f"Tipe data '{col_to_convert}' berhasil diubah menjadi `{target_type}`.")
-
-            except Exception as e:
-                st.error(f"Gagal mengubah tipe data: {e}")
+    st.success("Konversi tipe data otomatis selesai.")
 
     # Menampilkan info tipe data setelah konversi
-    st.write("### Informasi Tipe Data Setelah Konversi")
+    st.write("### Informasi Tipe Data Setelah Konversi Otomatis")
     buffer_after = io.StringIO()
-    df_converted.info(buf=buffer_after)
+    df_auto_converted.info(buf=buffer_after)
     s_after = buffer_after.getvalue()
     st.text(s_after)
 
-    # Opsional: Tampilkan preview data setelah konversi
-    st.write("### Preview Data Setelah Konversi")
-    st.dataframe(df_converted.head())
+    # Tampilkan preview data hasil konversi
+    st.write("### Preview Data Setelah Konversi Otomatis")
+    st.dataframe(df_auto_converted.head())
+
+    # Simpan df_auto_converted untuk digunakan di visualisasi selanjutnya jika diperlukan
+    df = df_auto_converted
