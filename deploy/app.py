@@ -30,33 +30,14 @@ if df is not None:
     st.write("Data berhasil dimuat. Berikut 5 baris pertama:")
     st.dataframe(df.head())
 
-    
-    st.write(f"Ukuran Data pada dataset: {df.shape[0]} baris, {df.shape[1]} kolom")
+    st.write(f"Ukuran Data: {df.shape[0]} baris, {df.shape[1]} kolom")
     st.write("Informasi Kolom:")
     
-    # --- Tampilkan tipe data sebelum konversi ---
-st.subheader("1. Tipe Data Sebelum Konversi")
-st.write(df.dtypes)
-
-# --- Daftar kolom yang akan dikonversi ---
-cols_to_convert = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
-
-# Periksa apakah semua kolom tersebut ada di dataset
-available_cols = [col for col in cols_to_convert if col in df.columns]
-
-if available_cols:
-    # Lakukan konversi otomatis
-    for col in available_cols:
-        df[col] = pd.to_numeric(df[col], errors='coerce')
-
-    st.success(f"Kolom {available_cols} berhasil dikonversi menjadi numerik.")
-
-    # --- Tampilkan tipe data setelah konversi ---
-    st.subheader("2. Tipe Data Setelah Konversi")
-    st.write(df.dtypes)
-
-else:
-    st.warning("Beberapa atau semua kolom target tidak ditemukan dalam dataset.")
+    # Untuk menampilkan df.info() dengan baik di Streamlit:
+    buffer = io.StringIO()
+    df.info(buf=buffer)
+    s = buffer.getvalue()
+    st.text(s)
 
     # --- Bagian Analisis Statistik Deskriptif ---
     st.subheader('2. Statistik Deskriptif')
@@ -145,11 +126,7 @@ else:
     # Tambahkan lebih banyak visualisasi dan analisis Anda di sini sesuai dengan notebook Capstone Anda
     
     # Contoh interaktivitas sederhana (sudah ada di kode Anda, ini tetap relevan)
-  # --- Bagian Eksplorasi Kolom ---
-st.subheader('4. Eksplorasi Kolom')
-
-# Cek apakah dataset sudah dimuat
-if df is not None:
+    st.subheader('4. Eksplorasi Kolom')
     selected_column = st.selectbox(
         'Pilih kolom untuk melihat nilai unik dan jumlahnya:',
         df.columns, key='explore_col_select'
@@ -161,6 +138,6 @@ if df is not None:
         if df[selected_column].dtype in ['object', 'category']: # Untuk kolom kategorikal
             st.write("Frekuensi setiap nilai unik:")
             st.write(df[selected_column].value_counts())
+
 else:
     st.info("Silakan unggah file CSV Anda untuk memulai proses EDA.")
-
