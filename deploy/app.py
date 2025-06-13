@@ -1,35 +1,21 @@
 import streamlit as st
+import pandas as pd
+import numpy as np
+import pickle
+from sklearn.preprocessing import StandardScaler
 
-st.title("Prediksi Kategori Obesitas")
-st.write("Silakan lengkapi data diri Anda untuk mengetahui kategori obesitas.")
+# Load model and encoder
+@st.cache_resource
+def load_model():
+    with open('model.pkl', 'rb') as f:
+        model = pickle.load(f)
+    with open('label_encoder.pkl', 'rb') as f:
+        le = pickle.load(f)
+    return model, le
 
-# Input numerik
-age = st.number_input("Usia (tahun)", min_value=1, max_value=120, value=25)
-height = st.number_input("Tinggi Badan (meter)", min_value=0.5, max_value=2.5, value=1.7)
-weight = st.number_input("Berat Badan (kg)", min_value=20, max_value=200, value=70)
-fcvc = st.slider("Frekuensi makan sayur per minggu", min_value=0, max_value=10, value=2)
-ncp = st.slider("Jumlah makan per hari", min_value=1, max_value=10, value=3)
-ch2o = st.slider("Konsumsi air per hari (liter)", min_value=0, max_value=5, value=2)
-faf = st.slider("Frekuensi aktivitas fisik per minggu", min_value=0, max_value=7, value=2)
-tue = st.slider("Waktu layar per hari (jam)", min_value=0, max_value=5, value=2)
+model, label_encoder = load_model()
 
-# Input kategorikal
-gender = st.selectbox("Jenis Kelamin", ["Male", "Female"])
-favc = st.selectbox("Sering makan makanan tinggi kalori?", ["yes", "no"])
-smoke = st.selectbox("Apakah Anda perokok?", ["yes", "no"])
-calc = st.selectbox("Seberapa sering konsumsi alkohol?", ["no", "Sometimes", "Frequently", "Always"])
-caec = st.selectbox("Seberapa sering ngemil di antara waktu makan?", ["no", "Sometimes", "Frequently", "Always"])
-mtrans = st.selectbox("Jenis transportasi utama", ["Public_Transportation", "Automobile", "Walking", "Motorbike", "Bike"])
-family_history = st.selectbox("Riwayat keluarga dengan obesitas?", ["yes", "no"])
-scc = st.selectbox("Apakah Anda mencatat kalori yang dikonsumsi?", ["yes", "no"])
-
-# Tombol prediksi
-if st.button("Prediksi Sekarang"):
-    # Di sini Anda akan memproses input dan menjalankan model
-    st.success("Input berhasil disimpan! Silakan lanjutkan ke proses prediksi.")
-
-
-
+# Preprocessing input
 def preprocess_input(data):
     # Mapping kategorikal
     gender_map = {"Male": 0, "Female": 1}
@@ -47,7 +33,7 @@ def preprocess_input(data):
     }
 
     # Encode data
-    data['Gender'] = gender_map.get(data['Gender'], -1)  # Default -1 jika tidak ditemukan
+    data['Gender'] = gender_map.get(data['Gender'], -1)
     data['CALC'] = calc_map.get(data['CALC'], -1)
     data['FAVC'] = favc_map.get(data['FAVC'], -1)
     data['SMOKE'] = smoke_map.get(data['SMOKE'], -1)
@@ -55,34 +41,37 @@ def preprocess_input(data):
     data['CAEC'] = caec_map.get(data['CAEC'], -1)
     data['MTRANS'] = mtrans_map.get(data['MTRANS'], -1)
 
-    # Normalisasi fitur numerik jika diperlukan
-    # Contoh: menggunakan StandardScaler
+    # Normalisasi fitur numerik
     scaler = StandardScaler()
     numerical_features = ['Age', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE']
     data[numerical_features] = scaler.fit_transform(data[numerical_features].values.reshape(1, -1))
 
     return data
 
+# Main app
+st.title("Prediksi Kategori Obesitas")
+st.write("Silakan lengkapi data diri Anda untuk mengetahui kategori obesitas.")
 
-if st.button("Lihat Hasil Prediksi"):
-    # Mengumpulkan input pengguna
-    age = st.number_input("Usia (tahun)", min_value=1, max_value=120, value=25)
-    gender = st.selectbox("Jenis Kelamin", ["Male", "Female"])
-    height = st.number_input("Tinggi Badan (meter)", min_value=0.5, max_value=2.5, value=1.7)
-    weight = st.number_input("Berat Badan (kg)", min_value=20, max_value=200, value=70)
-    calc = st.selectbox("Seberapa sering konsumsi alkohol?", ["no", "Sometimes", "Frequently", "Always"])
-    favc = st.selectbox("Sering makan makanan tinggi kalori?", ["yes", "no"])
-    fcvc = st.slider("Frekuensi makan sayur per minggu", min_value=0, max_value=10, value=2)
-    ncp = st.slider("Jumlah makan per hari", min_value=1, max_value=10, value=3)
-    scc = st.selectbox("Apakah Anda mencatat kalori yang dikonsumsi?", ["yes", "no"])
-    smoke = st.selectbox("Apakah Anda perokok?", ["yes", "no"])
-    ch2o = st.slider("Konsumsi air per hari (liter)", min_value=0, max_value=5, value=2)
-    family_history = st.selectbox("Riwayat keluarga dengan obesitas?", ["yes", "no"])
-    faf = st.slider("Frekuensi aktivitas fisik per minggu", min_value=0, max_value=7, value=2)
-    tue = st.slider("Waktu layar/hari (jam)", min_value=0, max_value=5, value=2)
-    caec = st.selectbox("Seberapa sering ngemil di antara waktu makan?", ["no", "Sometimes", "Frequently", "Always"])
-    mtrans = st.selectbox("Jenis transportasi utama", ["Public_Transportation", "Automobile", "Walking", "Motorbike", "Bike"])
+# Input data
+age = st.number_input("Usia (tahun)", min_value=1, max_value=120, value=25, key="age_input")
+gender = st.selectbox("Jenis Kelamin", ["Male", "Female"], key="gender_select")
+height = st.number_input("Tinggi Badan (meter)", min_value=0.5, max_value=2.5, value=1.7, key="height_input")
+weight = st.number_input("Berat Badan (kg)", min_value=20, max_value=200, value=70, key="weight_input")
+calc = st.selectbox("Seberapa sering konsumsi alkohol?", ["no", "Sometimes", "Frequently", "Always"], key="calc_select")
+favc = st.selectbox("Sering makan makanan tinggi kalori?", ["yes", "no"], key="favc_select")
+fcvc = st.slider("Frekuensi makan sayur per minggu", min_value=0, max_value=10, value=2, key="fcvc_slider")
+ncp = st.slider("Jumlah makan per hari", min_value=1, max_value=10, value=3, key="ncp_slider")
+scc = st.selectbox("Apakah Anda mencatat kalori yang dikonsumsi?", ["yes", "no"], key="scc_select")
+smoke = st.selectbox("Apakah Anda perokok?", ["yes", "no"], key="smoke_select")
+ch2o = st.slider("Konsumsi air per hari (liter)", min_value=0, max_value=5, value=2, key="ch2o_slider")
+family_history = st.selectbox("Riwayat keluarga dengan obesitas?", ["yes", "no"], key="family_history_select")
+faf = st.slider("Frekuensi aktivitas fisik per minggu", min_value=0, max_value=7, value=2, key="faf_slider")
+tue = st.slider("Waktu layar/hari (jam)", min_value=0, max_value=5, value=2, key="tue_slider")
+caec = st.selectbox("Seberapa sering ngemil di antara waktu makan?", ["no", "Sometimes", "Frequently", "Always"], key="caec_select")
+mtrans = st.selectbox("Jenis transportasi utama", ["Public_Transportation", "Automobile", "Walking", "Motorbike", "Bike"], key="mtrans_select")
 
+# Tombol prediksi
+if st.button("Prediksi"):
     # Buat DataFrame dari input pengguna
     input_data = pd.DataFrame({
         'Age': [age],
@@ -109,7 +98,7 @@ if st.button("Lihat Hasil Prediksi"):
     # Lakukan prediksi
     prediction = model.predict(input_data)[0]
 
-    # Decode hasil prediksi jika diperlukan
+    # Decode hasil prediksi
     categories = {
         0: "Insufficient_Weight",
         1: "Normal_Weight",
