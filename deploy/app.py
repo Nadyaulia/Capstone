@@ -19,29 +19,11 @@ uploaded_file = st.file_uploader("Unggah file CSV Anda", type=["csv"])
 df = None # Inisialisasi df sebagai None
 
 if uploaded_file is not None:
-    # Membaca file yang diunggah
     try:
+        # Membaca file CSV
         df = pd.read_csv(uploaded_file)
-        st.success("File berhasil diunggah dan dibaca!")
-    except Exception as e:
-        st.error(f"Terjadi kesalahan saat membaca file: {e}")
 
-if df is not None:
-    st.write("Data berhasil dimuat. Berikut 5 baris pertama:")
-    st.dataframe(df.head())
-
-    
-    st.write(f"Ukuran Data pada dataset: {df.shape[0]} baris, {df.shape[1]} kolom")
-    st.write("Informasi Kolom:")
-    
-    # Untuk menampilkan df.info() dengan baik di Streamlit:
-   # buffer = io.StringIO()
-    #df.info(buf=buffer)
-    #s = buffer.getvalue()
-    #st.text(s)
-
-
-     # Simpan info sebelum konversi
+        # Simpan info sebelum konversi
         buffer_before = io.StringIO()
         df.info(buf=buffer_before)
         info_before = buffer_before.getvalue()
@@ -56,6 +38,7 @@ if df is not None:
         df.info(buf=buffer_after)
         info_after = buffer_after.getvalue()
 
+        st.success("File berhasil diunggah dan dibaca!")
 
         # Tampilkan perbandingan tipe data sebelum dan sesudah
         st.subheader("Perbandingan Informasi Tipe Data")
@@ -65,6 +48,11 @@ if df is not None:
         st.markdown("### Sesudah Konversi:")
         st.text(info_after)
 
+    except Exception as e:
+        st.error(f"Terjadi kesalahan saat membaca atau memproses file: {e}")
+
+else:
+    st.info("Silakan unggah file CSV untuk melanjutkan.")
     
 
     # --- Bagian Analisis Statistik Deskriptif ---
