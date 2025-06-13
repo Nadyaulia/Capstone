@@ -11,6 +11,13 @@ scaler = joblib.load("deploy/scaler.pkl")
 
 st.write("Silakan lengkapi data diri Anda untuk mengetahui kategori obesitas.")
 
+try:
+    model = joblib.load("deploy/model_obesitas.pkl")
+    scaler = joblib.load("deploy/scaler.pkl")
+except Exception as e:
+    st.error(f"Gagal load model atau scaler: {e}")
+
+
 # Form input pengguna
 with st.form("form_prediksi"):
     age = st.number_input("Usia (tahun)", 1, 120, 25)
