@@ -142,6 +142,4 @@ if df is not None:
 
 else:
     st.info("Silakan unggah file CSV Anda untuk memulai proses EDA.")
-|
 
-bantu saya agar tipe data sesuai dengan apa yg saya sudah lakukan prepocesing
