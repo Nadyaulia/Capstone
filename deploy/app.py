@@ -9,8 +9,8 @@ st.write("Silakan lengkapi data diri Anda untuk mengetahui kategori obesitas.")
 # Load model dan scaler
 @st.cache_resource
 def load_model_and_scaler():
-    model = joblib.load("obesity_model.pkl")
-    scaler = joblib.load("scaler.pkl")
+    mmodel = joblib.load("/mount/src/capstone/obesity_model.pkl")
+    scaler = joblib.load("/mount/src/capstone/scaler.pkl")
     return model, scaler
 
 model, scaler = load_model_and_scaler()
