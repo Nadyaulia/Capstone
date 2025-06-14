@@ -7,7 +7,16 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 import os
 
 # Debugging: Cek isi direktori saat ini
+import os
+
+# Cek isi direktori saat ini
 st.write("Files in current directory:", os.listdir())
+
+# Cek apakah file ObesityDataSet.csv ada
+if os.path.exists("ObesityDataSet.csv"):
+    st.write("File ObesityDataSet.csv found!")
+else:
+    st.write("File ObesityDataSet.csv NOT found!")
 
 # Fungsi untuk memuat data
 def load_data():
