@@ -21,7 +21,7 @@ else:
 # Fungsi untuk memuat data
 def load_data():
     try:
-        data = pd.read_csv("ObesityDataSet.csv")
+        data = pd.read_csv("deploystreamlit/ObesityDataSet.csv")
         return data
     except FileNotFoundError:
         st.error("File ObesityDataSet.csv tidak ditemukan. Pastikan file ada di direktori yang benar.")
