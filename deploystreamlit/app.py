@@ -65,13 +65,7 @@ def main():
         model, scaler = load_model_and_scaler()
         if model is None or scaler is None:
             return
-
-    model = RandomForestClassifier()
-model.fit(X_train_scaled, y_train)
-
-joblib.dump(model, 'obesity_model.pkl')
-joblib.dump(scaler, 'scaler.pkl')
-
+            
         # Scale input data
         input_data_scaled = scaler.transform(input_data)
 
