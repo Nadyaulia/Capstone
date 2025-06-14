@@ -12,11 +12,11 @@ st.write("Files in current directory:", os.listdir())
 def load_model_and_scaler():
     try:
         # Memuat model
-        model_path = "obesity_model.pkl"
+        model_path = "deploystreamlit/obesity_model.pkl"
         model = joblib.load(model_path)
         
         # Memuat scaler
-        scaler_path = "scaler.pkl"
+        scaler_path = "deploystreamlit/scaler.pkl"
         scaler = joblib.load(scaler_path)
         
         return model, scaler
