@@ -1,27 +1,51 @@
+import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
-import joblib
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 
-data = pd.read_csv("ObesityDataSet.csv")
+# Load the dataset
+@st.cache_data
+def load_data():
+    data = pd.read_csv("ObesityDataSet.csv")
+    return data
 
-# Fungsi untuk memuat model dan scaler
-def load_model_and_scaler():
-    try:
-        # Memuat model
-        model_path = "obesity_model.pkl"
-        model = joblib.load(model_path)
-        
-        # Memuat scaler
-        scaler_path = "scaler.pkl"
-        scaler = joblib.load(scaler_path)
-        
-        return model, scaler
-    except FileNotFoundError:
-        st.error("Model atau scaler tidak ditemukan. Pastikan file ada di direktori yang benar.")
-        return None, None
+# Preprocess the data
+def preprocess_data(data):
+    # Handle missing values, encode categorical variables, etc.
+    # Example:
+    data = data.dropna()  # Handle missing values
+    le = LabelEncoder()
+    data['Gender'] = le.fit_transform(data['Gender'])
+    data['family_history_with_overweight'] = le.fit_transform(data['family_history_with_overweight'])
+    data['FAVC'] = le.fit_transform(data['FAVC'])
+    data['CAEC'] = le.fit_transform(data['CAEC'])
+    data['SMOKE'] = le.fit_transform(data['SMOKE'])
+    data['SCC'] = le.fit_transform(data['SCC'])
+    data['NCP'] = le.fit_transform(data['NCP'])
+    data['CH2O'] = le.fit_transform(data['CH2O'])
+    data['CALC'] = le.fit_transform(data['CALC'])
+    data['MTRANS'] = le.fit_transform(data['MTRANS'])
+    data['NObeyesdad'] = le.fit_transform(data['NObeyesdad'])
+    return data
+
+# Train the model
+def train_model(X, y):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+    
+    model = RandomForestClassifier(random_state=42)
+    model.fit(X_train_scaled, y_train)
+    return model, scaler
+
+# Make predictions
+def predict_obesity(model, scaler, input_data):
+    input_data_scaled = scaler.transform(input_data)
+    prediction = model.predict(input_data_scaled)
+    return prediction
 
 # Main Streamlit app
 def main():
@@ -61,16 +85,17 @@ def main():
         input_data['family_history_with_overweight'] = le.fit_transform(input_data['family_history_with_overweight'])
         input_data['CALC'] = le.fit_transform(input_data['CALC'])
 
-        # Load model and scaler
-        model, scaler = load_model_and_scaler()
-        if model is None or scaler is None:
-            return
-            
-        # Scale input data
-        input_data_scaled = scaler.transform(input_data)
+        # Load and preprocess data
+        data = load_data()
+        preprocessed_data = preprocess_data(data)
+
+        # Train the model
+        X = preprocessed_data.drop(columns=['NObeyesdad'])
+        y = preprocessed_data['NObeyesdad']
+        model, scaler = train_model(X, y)
 
         # Make prediction
-        prediction = model.predict(input_data_scaled)
+        prediction = predict_obesity(model, scaler, input_data.values)
 
         # Display the result
         st.subheader("Hasil Prediksi")
