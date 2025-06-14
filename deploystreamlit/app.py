@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -7,17 +6,21 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 import os
 
-# Gunakan path relatif untuk memastikan file ditemukan
-DATA_PATH = "ObesityDataSet.csv"
+# Debugging: Cek isi direktori saat ini
+st.write("Files in current directory:", os.listdir())
 
+# Fungsi untuk memuat data
 def load_data():
-    data = pd.read_csv(DATA_PATH)
-    return data
+    try:
+        data = pd.read_csv("ObesityDataSet.csv")
+        return data
+    except FileNotFoundError:
+        st.error("File ObesityDataSet.csv tidak ditemukan. Pastikan file ada di direktori yang benar.")
+        return None
 
 # Preprocess the data
 def preprocess_data(data):
     # Handle missing values, encode categorical variables, etc.
-    # Example:
     data = data.dropna()  # Handle missing values
     le = LabelEncoder()
     data['Gender'] = le.fit_transform(data['Gender'])
@@ -90,6 +93,9 @@ def main():
 
         # Load and preprocess data
         data = load_data()
+        if data is None:
+            return
+
         preprocessed_data = preprocess_data(data)
 
         # Train the model
