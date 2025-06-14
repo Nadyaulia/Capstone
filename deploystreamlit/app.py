@@ -1,22 +1,21 @@
-import streamlit as st
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.ensemble import RandomForestClassifier
 import joblib
-import os
 
-# Debugging: Cek isi direktori saat ini
-st.write("Files in current directory:", os.listdir())
+data = pd.read_csv("ObesityDataSet.csv")
 
 # Fungsi untuk memuat model dan scaler
 def load_model_and_scaler():
     try:
         # Memuat model
-        model_path = "deploystreamlit/obesity_model.pkl"
+        model_path = "obesity_model.pkl"
         model = joblib.load(model_path)
         
         # Memuat scaler
-        scaler_path = "deploystreamlit/scaler.pkl"
+        scaler_path = "scaler.pkl"
         scaler = joblib.load(scaler_path)
         
         return model, scaler
@@ -66,6 +65,12 @@ def main():
         model, scaler = load_model_and_scaler()
         if model is None or scaler is None:
             return
+
+    model = RandomForestClassifier()
+model.fit(X_train_scaled, y_train)
+
+joblib.dump(model, 'obesity_model.pkl')
+joblib.dump(scaler, 'scaler.pkl')
 
         # Scale input data
         input_data_scaled = scaler.transform(input_data)
