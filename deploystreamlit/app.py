@@ -7,21 +7,14 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 import os
 
 # Debugging: Cek isi direktori saat ini
-import os
-
-# Cek isi direktori saat ini
 st.write("Files in current directory:", os.listdir())
-
-# Cek apakah file ObesityDataSet.csv ada
-if os.path.exists("ObesityDataSet.csv"):
-    st.write("File ObesityDataSet.csv found!")
-else:
-    st.write("File ObesityDataSet.csv NOT found!")
 
 # Fungsi untuk memuat data
 def load_data():
     try:
-        data = pd.read_csv("deploystreamlit/ObesityDataSet.csv")
+        # Gunakan path absolut relatif dari root repo
+        DATA_PATH = os.path.join(os.getcwd(), 'deploystreamlit/ObesityDataSet.csv')
+        data = pd.read_csv(DATA_PATH)
         return data
     except FileNotFoundError:
         st.error("File ObesityDataSet.csv tidak ditemukan. Pastikan file ada di direktori yang benar.")
